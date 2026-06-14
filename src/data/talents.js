@@ -1,7 +1,22 @@
 // 인재(취업준비생) 쇼케이스 데이터.
-// 추후 Supabase 테이블(rest05_talents)에서 불러오도록 교체 가능.
+// 추후 Supabase 테이블(rest05_profiles)에서 불러오도록 교체 가능.
 
 export const FILTERS = ['전체', '프론트엔드', '백엔드', 'AI·데이터', '기획·PM', '디자인']
+
+// 드림아이티비즈 인재 인증 평가 5개 축 (실력 증빙)
+export const DIMENSIONS = [
+  { key: 'education', label: '학력' },
+  { key: 'cert', label: '자격' },
+  { key: 'career', label: '경력' },
+  { key: 'portfolio', label: '포트폴리오' },
+  { key: 'assessment', label: '역량평가' },
+]
+
+// 5개 축 점수로 종합 인증 점수(100점 환산) 계산
+export function totalScore(scores) {
+  const vals = DIMENSIONS.map((d) => scores[d.key] ?? 0)
+  return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
+}
 
 export const TALENTS = [
   {
@@ -11,6 +26,7 @@ export const TALENTS = [
     status: '구직중',
     blurb: '디자인 시스템 구축과 접근성에 강점. 실서비스 3종 런칭 경험.',
     skills: ['React', 'TypeScript', 'Vite', '디자인시스템'],
+    scores: { education: 88, cert: 82, career: 90, portfolio: 96, assessment: 92 },
   },
   {
     field: 'AI·데이터',
@@ -19,6 +35,7 @@ export const TALENTS = [
     status: '구직중',
     blurb: 'LLM 파인튜닝과 대시보드 설계. 캐글 상위 5% 입상.',
     skills: ['Python', 'PyTorch', 'SQL', 'LLM'],
+    scores: { education: 94, cert: 90, career: 84, portfolio: 92, assessment: 95 },
   },
   {
     field: '백엔드',
@@ -27,6 +44,7 @@ export const TALENTS = [
     status: '채용제의 수신중',
     blurb: 'MSA 설계와 인프라 자동화 경험. 응답속도 40% 개선 사례.',
     skills: ['Node.js', 'PostgreSQL', 'Docker', 'AWS'],
+    scores: { education: 86, cert: 88, career: 93, portfolio: 89, assessment: 91 },
   },
   {
     field: '기획·PM',
@@ -35,6 +53,7 @@ export const TALENTS = [
     status: '구직중',
     blurb: '0→1 신규 서비스 기획. 사용자 인터뷰 기반 그로스 실험 주도.',
     skills: ['서비스기획', 'Figma', '데이터분석', 'A/B테스트'],
+    scores: { education: 90, cert: 78, career: 86, portfolio: 88, assessment: 90 },
   },
   {
     field: '디자인',
@@ -43,6 +62,7 @@ export const TALENTS = [
     status: '구직중',
     blurb: 'UX 리서치부터 UI까지. 모바일 앱 리브랜딩 프로젝트 리드.',
     skills: ['UI/UX', 'Figma', '프로토타이핑', '모션'],
+    scores: { education: 84, cert: 80, career: 85, portfolio: 97, assessment: 89 },
   },
   {
     field: '프론트엔드',
@@ -51,6 +71,7 @@ export const TALENTS = [
     status: '채용제의 수신중',
     blurb: '웹 애니메이션·3D 인터랙션 특화. 사내 컴포넌트 라이브러리 제작.',
     skills: ['React', 'Three.js', 'GSAP', 'CSS'],
+    scores: { education: 82, cert: 85, career: 88, portfolio: 95, assessment: 93 },
   },
 ]
 

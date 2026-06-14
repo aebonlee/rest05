@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useThread } from './hooks/useThread'
 import Chatbot from './components/Chatbot'
-import { FILTERS, TALENTS, FIELDS, STEPS, STATS } from './data/talents'
+import AuthButton from './components/AuthButton'
+import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
 const BRAND = '드림아이티비즈'
 
@@ -62,9 +63,9 @@ export default function App() {
               <NavLink href="#process">채용 제의 절차</NavLink>
             </div>
           </div>
-          <a href="#talents" style={ctaPill('#0F2540')} onMouseEnter={hoverBg('#E8623D')} onMouseLeave={hoverBg('#0F2540')}>
-            인재 둘러보기 <span>→</span>
-          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <AuthButton />
+          </div>
         </nav>
       </header>
 
@@ -81,13 +82,13 @@ export default function App() {
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '132px 40px 142px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--coral-bg)', border: '1px solid var(--coral-border)', padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 700, color: 'var(--coral-text)', marginBottom: 30, animation: 'floatUp .6s ease both' }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--orange)' }} />
-            기업이 먼저 찾아오는 역(逆)채용 플랫폼
+            드림아이티비즈가 검증한 인증 인재 · 역(逆)채용 플랫폼
           </div>
           <h1 className="hero-h1" style={{ fontSize: 72, lineHeight: 1.08, fontWeight: 800, letterSpacing: '-0.04em', maxWidth: 820, animation: 'floatUp .7s ease .05s both' }}>
-            당신의 실력을,<br /><span style={{ color: 'var(--orange)' }}>기업이 먼저</span> 알아봅니다
+            검증된 실력을,<br /><span style={{ color: 'var(--orange)' }}>기업이 먼저</span> 알아봅니다
           </h1>
-          <p style={{ fontSize: 21, lineHeight: 1.6, color: 'var(--muted)', maxWidth: 540, marginTop: 28, fontWeight: 400, animation: 'floatUp .7s ease .12s both' }}>
-            드림아이티비즈가 키운 인재를 한곳에. 지원서를 쓰는 대신, 당신의 강점을 펼쳐두면 기업이 먼저 채용을 제안합니다.
+          <p style={{ fontSize: 21, lineHeight: 1.6, color: 'var(--muted)', maxWidth: 560, marginTop: 28, fontWeight: 400, animation: 'floatUp .7s ease .12s both' }}>
+            학력·자격·경력·포트폴리오·역량평가까지 검증해 <b style={{ color: 'var(--ink)' }}>인증 점수</b>로 증명합니다. 지원서 대신 검증된 실력을 펼쳐두면, 기업이 먼저 채용을 제안합니다.
           </p>
           <div style={{ display: 'flex', gap: 14, marginTop: 44, flexWrap: 'wrap', animation: 'floatUp .7s ease .2s both' }}>
             <a href="#talents" style={ctaPill('#E8623D', 17)} onMouseEnter={hoverY} onMouseLeave={hoverYReset}>인재 둘러보기 <span>→</span></a>
@@ -111,8 +112,11 @@ export default function App() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, marginBottom: 48 }}>
             <div ref={registerTitle} className="reveal" style={{ paddingLeft: 4 }}>
-              <Eyebrow>TALENT POOL</Eyebrow>
-              <H2>주목할 인재</H2>
+              <Eyebrow>VERIFIED TALENT POOL</Eyebrow>
+              <H2>드림아이티비즈 인증 인재</H2>
+              <p style={{ fontSize: 16, color: 'var(--muted)', marginTop: 14, maxWidth: 560, lineHeight: 1.6 }}>
+                학력·자격·경력·포트폴리오·역량평가 <b style={{ color: 'var(--ink)' }}>5개 축을 검증</b>해 인증 점수로 환산합니다. 점수로 증명된 인재만 노출됩니다.
+              </p>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {FILTERS.map((f) => {
@@ -233,27 +237,68 @@ function H2({ children }) {
 
 function TalentCard({ t }) {
   const offered = t.status === '채용제의 수신중'
+  const total = totalScore(t.scores)
   return (
     <div
       style={{ display: 'block', background: '#fff', border: '1px solid #EAEDF0', borderRadius: 18, padding: '30px 32px', transition: 'transform .18s, box-shadow .18s' }}
       onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(15,37,64,0.1)' }}
       onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: 13, fontWeight: 700, color: '#E8623D', background: '#FDEBE4', padding: '6px 12px', borderRadius: 999 }}>{t.field}</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: offered ? '#1F9D6B' : '#8A96A3' }}>● {t.status}</span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-        <h3 style={{ fontSize: 23, fontWeight: 800, letterSpacing: '-0.02em' }}>{t.name}</h3>
-        <span style={{ fontSize: 14, color: '#8A96A3', fontWeight: 600 }}>{t.field} 인재</span>
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 9 }}>
+            <h3 style={{ fontSize: 23, fontWeight: 800, letterSpacing: '-0.02em' }}>{t.name}</h3>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 12, fontWeight: 700, color: '#1F9D6B', background: '#E7F6EF', padding: '3px 9px', borderRadius: 999 }}>✓ 인증</span>
+          </div>
+          <p style={{ fontSize: 16, color: '#3C4A5A', marginTop: 8, fontWeight: 600, lineHeight: 1.4 }}>{t.headline}</p>
+        </div>
+        <ScoreBadge total={total} />
       </div>
-      <p style={{ fontSize: 16, color: '#3C4A5A', marginTop: 8, fontWeight: 600, lineHeight: 1.4 }}>{t.headline}</p>
-      <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 10, lineHeight: 1.6 }}>{t.blurb}</p>
-      <div style={{ display: 'flex', gap: 8, marginTop: 22, flexWrap: 'wrap' }}>
+
+      <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 12, lineHeight: 1.6 }}>{t.blurb}</p>
+
+      {/* 5개 축 검증 점수 */}
+      <div style={{ marginTop: 18, padding: '16px 16px 12px', background: '#FBFAF8', borderRadius: 14, border: '1px solid #F0EEEA' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#8A96A3', marginBottom: 12, letterSpacing: '0.02em' }}>실력 증빙 · 5개 축 검증</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+          {DIMENSIONS.map((d) => (
+            <ScoreBar key={d.key} label={d.label} value={t.scores[d.key]} />
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
         {t.skills.map((s) => (
           <span key={s} style={{ fontSize: 13, fontWeight: 600, color: '#5C6B7A', background: '#F2F4F6', padding: '5px 12px', borderRadius: 8 }}>{s}</span>
         ))}
       </div>
+    </div>
+  )
+}
+
+function ScoreBadge({ total }) {
+  return (
+    <div style={{ flexShrink: 0, textAlign: 'center', background: '#0F2540', color: '#fff', borderRadius: 14, padding: '10px 14px', minWidth: 78 }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: '#FF8A6B', letterSpacing: '0.06em' }}>인증 점수</div>
+      <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.1, marginTop: 2 }}>{total}</div>
+      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)' }}>/ 100</div>
+    </div>
+  )
+}
+
+function ScoreBar({ label, value }) {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ height: 46, width: 8, margin: '0 auto', background: '#ECEAE6', borderRadius: 999, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: `${value}%`, background: 'linear-gradient(180deg, #FF8A6B, #E8623D)', borderRadius: 999 }} />
+      </div>
+      <div style={{ fontSize: 12, fontWeight: 800, color: '#0F2540', marginTop: 7 }}>{value}</div>
+      <div style={{ fontSize: 10.5, color: '#8A96A3', marginTop: 1, lineHeight: 1.2 }}>{label}</div>
     </div>
   )
 }

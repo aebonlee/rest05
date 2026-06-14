@@ -60,6 +60,41 @@ supabase functions deploy chat --no-verify-jwt
 - 호출 흐름: 브라우저 → `supabase.functions.invoke('chat')` → Edge Function → OpenAI.
   OpenAI 키는 서버에만 있으므로 브라우저에 절대 노출되지 않는다.
 
+## 데이터베이스 (Supabase · rest05_ 접두사)
+> ⚠️ 단일 공유 프로젝트라 모든 객체에 `rest05_` 접두사 필수.
+
+`supabase/schema.sql` 을 대시보드 **SQL Editor** 에 붙여넣고 실행:
+- `rest05_profiles` — 인재 프로필. 5개 축 점수(`score_education/cert/career/portfolio/assessment`)와
+  자동 계산되는 종합 인증 점수 `score_total`, `verified` 포함
+- `rest05_offers` — 기업 → 인재 채용 제의
+- RLS: 공개(`is_public`) 인재는 누구나 열람, 본인 프로필만 수정
+- 가입 시 `rest05_profiles` 자동 생성 트리거(google/kakao 공통)
+
+### 인재 인증 점수 (실력 증빙 5개 축)
+학력 · 자격 · 경력 · 포트폴리오 · 역량평가 → 각 0~100 → 평균이 종합 인증 점수.
+검증을 통과한 인재만 `verified=true`, `is_public=true` 로 인재풀에 노출.
+
+## 로그인 (Google + Kakao OAuth)
+프런트 코드는 `src/lib/auth.js` + `src/components/AuthButton.jsx` 로 이미 구현됨
+(`supabase.auth.signInWithOAuth`). **대시보드에서 provider만 켜면** 동작한다.
+
+Supabase → **Authentication → Providers**:
+1. **Google** 활성화 → Google Cloud Console에서 OAuth 클라이언트 생성,
+   Client ID/Secret 입력. 승인 리디렉션 URI:
+   `https://hcmgdztsgjvzcyxyayaj.supabase.co/auth/v1/callback`
+2. **Kakao** 활성화 → Kakao Developers 앱 생성, REST API 키/Client Secret 입력.
+   Redirect URI 동일(`.../auth/v1/callback`)
+3. **Authentication → URL Configuration → Redirect URLs** 에 사이트 추가:
+   `https://rest05.dreamitbiz.com` (+ 로컬 `http://localhost:5173`)
+
+## OG 이미지 (공유 미리보기)
+- 메타태그: `index.html` 의 `og:*` / `twitter:*` (이미지 `https://rest05.dreamitbiz.com/og.png`)
+- 이미지 재생성(sharp 임시 설치):
+  ```bash
+  npm i -D sharp && node scripts/make-og.mjs && npm un sharp
+  ```
+- 카카오 캐시 갱신: https://developers.kakao.com/tool/debugger/sharing 에서 URL 재스크랩
+
 ## 배포 (GitHub Pages)
 `main` 브랜치 push 시 `.github/workflows/deploy.yml`이 자동 빌드·배포.
 
