@@ -5,8 +5,11 @@ import AuthButton from './components/AuthButton'
 import ProfileForm from './components/ProfileForm'
 import OfferModal from './components/OfferModal'
 import MyPage from './components/MyPage'
-import { SpoolSVG, SpoolRow, BrandPalette } from './components/BrandPalette'
+import AdminPage from './components/AdminPage'
+import ThemePicker from './components/ThemePicker'
+import { SpoolSVG } from './components/BrandPalette'
 import { fetchPublicTalents } from './lib/talentsRepo'
+import { DEFAULT_THEME } from './data/themes'
 import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
 const BRAND = '드림아이티비즈'
@@ -28,8 +31,9 @@ export default function App() {
   const [minScore, setMinScore] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
   const [offerTarget, setOfferTarget] = useState(null)
-  const [view, setView] = useState('home') // 'home' | 'me'
+  const [view, setView] = useState('home') // 'home' | 'me' | 'admin'
   const [meVersion, setMeVersion] = useState(0) // 마이페이지 새로고침 트리거
+  const [theme, setTheme] = useState(DEFAULT_THEME) // 실타래·실선 공통 색상
   const [remote, setRemote] = useState(null) // rest05_profiles 로드 결과
   const [loaded, setLoaded] = useState(false)
 
@@ -80,9 +84,9 @@ export default function App() {
       >
         <defs>
           <linearGradient id="thGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#FF8A6B" />
-            <stop offset="0.5" stopColor="#E8623D" />
-            <stop offset="1" stopColor="#EF7A57" />
+            <stop offset="0" stopColor={theme.from} />
+            <stop offset="0.5" stopColor={theme.mid} />
+            <stop offset="1" stopColor={theme.to} />
           </linearGradient>
           <filter id="dotGlow" x="-300%" y="-300%" width="700%" height="700%">
             <feGaussianBlur stdDeviation="6" />
@@ -96,11 +100,11 @@ export default function App() {
           strokeWidth="3.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ strokeDasharray: 6000, strokeDashoffset: 6000, filter: 'drop-shadow(0 2px 6px rgba(232,98,61,0.30))' }}
+          style={{ strokeDasharray: 6000, strokeDashoffset: 6000, filter: `drop-shadow(0 2px 6px ${theme.glow})` }}
         />
         <g ref={dotRef} style={{ opacity: 0 }}>
-          <circle r="12" fill="#FF8A6B" opacity="0.35" filter="url(#dotGlow)" />
-          <circle r="6.5" fill="#E8623D" style={{ animation: 'dotPulse 1.8s ease-in-out infinite', transformBox: 'fill-box', transformOrigin: 'center' }} />
+          <circle r="12" fill={theme.from} opacity="0.35" filter="url(#dotGlow)" />
+          <circle r="6.5" fill={theme.mid} style={{ animation: 'dotPulse 1.8s ease-in-out infinite', transformBox: 'fill-box', transformOrigin: 'center' }} />
           <circle r="2.6" fill="#fff" />
         </g>
       </svg>
@@ -121,6 +125,7 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <ThemePicker theme={theme} onChange={setTheme} />
             <button onClick={() => setProfileOpen(true)} style={ctaPill('#E8623D')} onMouseEnter={hoverBg('#0F2540')} onMouseLeave={hoverBg('#E8623D')}>
               인재 등록
             </button>
@@ -138,7 +143,7 @@ export default function App() {
           aria-hidden="true"
           style={{ position: 'absolute', right: '9%', top: 96, zIndex: 2, animation: 'spoolBob 6s ease-in-out infinite', filter: 'drop-shadow(0 26px 44px rgba(15,37,64,0.18))' }}
         >
-          <SpoolSVG size={240} from="#3E5C82" to="#0F2540" id="hero-spool" />
+          <SpoolSVG size={312} from={theme.from} to={theme.to} id="hero-spool" />
         </div>
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '96px 40px 96px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--coral-bg)', border: '1px solid var(--coral-border)', padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 700, color: 'var(--coral-text)', marginBottom: 30, animation: 'floatUp .6s ease both' }}>
@@ -208,20 +213,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* 브랜드: 실타래 색상 변형 + 컬러 팔레트 */}
-          <div style={{ marginTop: 18, background: '#fff', border: '1px solid #EAEDF0', borderRadius: 22, padding: '34px 36px' }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND · 실타래</span>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 22px' }}>
-              실 한 가닥이 사람과 기업을 잇는다는 의미의 실타래가 시그니처입니다. (코드로 직접 그린 SVG — 색상 변형 자유)
-            </p>
-            <SpoolRow size={104} />
-            <div style={{ height: 1, background: 'var(--line)', margin: '28px 0' }} />
-            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND COLORS</span>
-            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 18px' }}>
-              메인·보조(상태)·배경으로 구성된 확장 컬러 팔레트입니다.
-            </p>
-            <BrandPalette />
-          </div>
         </div>
       </section>
 
@@ -337,7 +328,10 @@ export default function App() {
             <div style={{ fontSize: 21, fontWeight: 800, color: '#fff', letterSpacing: '-0.03em' }}>{BRAND} <span style={{ color: '#FF8A6B', fontSize: 13, fontWeight: 600 }}>인재풀</span></div>
             <p style={{ fontSize: 14, marginTop: 14, lineHeight: 1.7 }}>드림아이티비즈 인재홍보 플랫폼 · contact@dreamitbiz.com<br />취업준비생의 실력을 기업에 잇는 역채용 쇼케이스입니다.</p>
           </div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>© 2026 DreamIT Biz. All rights reserved.</div>
+          <div style={{ textAlign: 'right' }}>
+            <button onClick={() => setView('admin')} style={{ cursor: 'pointer', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: 600, fontFamily: 'inherit', padding: 0 }}>제작 의도 · 디자인 가이드</button>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginTop: 8 }}>© 2026 DreamIT Biz. All rights reserved.</div>
+          </div>
         </div>
       </footer>
 
@@ -348,6 +342,9 @@ export default function App() {
       {view === 'me' && (
         <MyPage version={meVersion} onBack={() => setView('home')} onEdit={() => setProfileOpen(true)} />
       )}
+
+      {/* ── 관리자 · 제작 의도/디자인 가이드 ── */}
+      {view === 'admin' && <AdminPage onBack={() => setView('home')} />}
 
       {/* ── 모달 ── */}
       <ProfileForm open={profileOpen} onClose={() => { setProfileOpen(false); setMeVersion((v) => v + 1) }} />

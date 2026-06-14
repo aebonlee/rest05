@@ -5,10 +5,12 @@ let _uid = 0
 
 export function SpoolSVG({ size = 160, from = '#FF8A6B', to = '#D9532E', tail = true, id }) {
   const gid = id || `sp${++_uid}`
+  // 가운데가 통통한 배럴(barrel) 몸통
+  const body = 'M44,34 L96,34 Q114,84 96,134 L44,134 Q26,84 44,34 Z'
   return (
-    <svg width={size * 0.86} height={size} viewBox="0 0 140 170" role="img" aria-label="실타래">
+    <svg width={size * 0.8} height={size} viewBox="0 0 140 184" role="img" aria-label="실타래">
       <defs>
-        <linearGradient id={`${gid}-thread`} x1="0" y1="0" x2="0.25" y2="1">
+        <linearGradient id={`${gid}-thread`} x1="0" y1="0" x2="0.3" y2="1">
           <stop offset="0" stopColor={from} />
           <stop offset="1" stopColor={to} />
         </linearGradient>
@@ -16,34 +18,34 @@ export function SpoolSVG({ size = 160, from = '#FF8A6B', to = '#D9532E', tail = 
           <stop offset="0" stopColor="#FFFFFF" />
           <stop offset="1" stopColor="#DEE2E7" />
         </linearGradient>
-        <clipPath id={`${gid}-body`}><rect x="36" y="36" width="68" height="98" rx="4" /></clipPath>
+        <clipPath id={`${gid}-body`}><path d={body} /></clipPath>
       </defs>
 
       {/* 바닥 그림자 */}
-      <ellipse cx="70" cy="160" rx="50" ry="7" fill="#0F2540" opacity="0.10" />
+      <ellipse cx="70" cy="172" rx="48" ry="6.5" fill="#0F2540" opacity="0.10" />
 
-      {/* 풀린 실 한 가닥(연결의 상징) */}
+      {/* 아래로 이어지는 실 한 가닥(페이지 실선과 연결되는 타입) */}
       {tail && (
-        <path d="M104 96 C126 104 120 130 100 132 C84 134 92 116 104 120"
-          fill="none" stroke={to} strokeWidth="3.4" strokeLinecap="round" opacity="0.95" />
+        <path d="M70,150 C66,160 80,166 73,176 C69,181 71,183 71,184"
+          fill="none" stroke={to} strokeWidth="3.6" strokeLinecap="round" />
       )}
 
-      {/* 실 몸통 */}
-      <rect x="36" y="36" width="68" height="98" rx="4" fill={`url(#${gid}-thread)`} />
-      {/* 감긴 실 결 */}
+      {/* 실 몸통(배럴) */}
+      <path d={body} fill={`url(#${gid}-thread)`} />
+      {/* 감긴 실 결 — 가운데가 더 넓어 통통해 보인다 */}
       <g clipPath={`url(#${gid}-body)`} stroke={to} strokeWidth="1" opacity="0.30">
-        {Array.from({ length: 23 }).map((_, i) => (
-          <line key={i} x1="36" y1={40 + i * 4.2} x2="104" y2={40 + i * 4.2 + 1.6} />
+        {Array.from({ length: 24 }).map((_, i) => (
+          <line key={i} x1="24" y1={37 + i * 4.1} x2="116" y2={37 + i * 4.1 + 1.4} />
         ))}
       </g>
-      {/* 좌측 하이라이트 */}
-      <rect x="43" y="36" width="10" height="98" fill="#fff" opacity="0.20" />
+      {/* 좌측 하이라이트(곡면 느낌) */}
+      <path d="M44,34 Q30,84 44,134 L52,134 Q40,84 52,34 Z" fill="#fff" opacity="0.18" />
 
       {/* 위/아래 마구리(플랜지) */}
-      <rect x="16" y="14" width="108" height="26" rx="12" fill={`url(#${gid}-cap)`} stroke="#D4D8DE" strokeWidth="1" />
-      <ellipse cx="70" cy="22" rx="50" ry="7" fill="#fff" opacity="0.55" />
-      <rect x="16" y="130" width="108" height="26" rx="12" fill={`url(#${gid}-cap)`} stroke="#D4D8DE" strokeWidth="1" />
-      <ellipse cx="70" cy="150" rx="46" ry="5.5" fill="#0F2540" opacity="0.05" />
+      <rect x="14" y="8" width="112" height="26" rx="13" fill={`url(#${gid}-cap)`} stroke="#D4D8DE" strokeWidth="1" />
+      <ellipse cx="70" cy="16" rx="52" ry="7" fill="#fff" opacity="0.55" />
+      <rect x="14" y="132" width="112" height="26" rx="13" fill={`url(#${gid}-cap)`} stroke="#D4D8DE" strokeWidth="1" />
+      <ellipse cx="70" cy="152" rx="48" ry="5.5" fill="#0F2540" opacity="0.05" />
     </svg>
   )
 }
