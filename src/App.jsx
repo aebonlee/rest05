@@ -134,7 +134,7 @@ export default function App() {
           className="hero-spool"
           style={{ position: 'absolute', right: '9%', top: 96, width: 230, height: 'auto', zIndex: 2, animation: 'spoolBob 6s ease-in-out infinite', filter: 'drop-shadow(0 26px 44px rgba(15,37,64,0.20))' }}
         />
-        <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '132px 40px 142px' }}>
+        <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '96px 40px 96px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--coral-bg)', border: '1px solid var(--coral-border)', padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 700, color: 'var(--coral-text)', marginBottom: 30, animation: 'floatUp .6s ease both' }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--orange)' }} />
             드림아이티비즈가 검증한 인증 인재 · 역(逆)채용 플랫폼
@@ -163,7 +163,7 @@ export default function App() {
       </section>
 
       {/* ── 인재 쇼케이스 ── */}
-      <section id="talents" style={{ position: 'relative', zIndex: 2, padding: '116px 0' }}>
+      <section id="talents" style={{ position: 'relative', zIndex: 2, padding: '78px 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, marginBottom: 48 }}>
             <div ref={registerTitle} className="reveal" style={{ paddingLeft: 4 }}>
@@ -214,7 +214,7 @@ export default function App() {
       </section>
 
       {/* ── 직무 분야 ── */}
-      <section id="fields" style={{ position: 'relative', zIndex: 2, padding: '116px 0' }}>
+      <section id="fields" style={{ position: 'relative', zIndex: 2, padding: '78px 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div ref={registerTitle} className="reveal" style={{ marginBottom: 56 }}>
             <Eyebrow>JOB FIELDS</Eyebrow>
@@ -234,7 +234,7 @@ export default function App() {
       </section>
 
       {/* ── 채용 제의 절차 ── */}
-      <section id="process" style={{ position: 'relative', zIndex: 2, padding: '70px 0' }}>
+      <section id="process" style={{ position: 'relative', zIndex: 2, padding: '56px 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: 28, padding: '72px 64px' }}>
             <div ref={registerTitle} className="reveal" style={{ marginBottom: 56 }}>
@@ -255,7 +255,7 @@ export default function App() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ position: 'relative', zIndex: 2, padding: '116px 0' }}>
+      <section style={{ position: 'relative', zIndex: 2, padding: '78px 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div style={{ background: 'var(--coral-bg)', borderRadius: 28, padding: '72px 64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 28 }}>
             <div ref={registerTitle} className="reveal">
