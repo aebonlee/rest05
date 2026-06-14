@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useThread } from './hooks/useThread'
 import Chatbot from './components/Chatbot'
 import AuthButton from './components/AuthButton'
 import ProfileForm from './components/ProfileForm'
 import OfferModal from './components/OfferModal'
+import { fetchPublicTalents } from './lib/talentsRepo'
 import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
 const BRAND = '드림아이티비즈'
@@ -25,9 +26,24 @@ export default function App() {
   const [minScore, setMinScore] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
   const [offerTarget, setOfferTarget] = useState(null)
+  const [remote, setRemote] = useState(null) // rest05_profiles 로드 결과
+  const [loaded, setLoaded] = useState(false)
 
-  // 마운트 시 한 번 랜덤 정렬
-  const shuffled = useMemo(() => shuffle(TALENTS), [])
+  // 공개·인증 인재 실시간 로드 (없거나 실패 시 샘플로 폴백)
+  useEffect(() => {
+    let alive = true
+    fetchPublicTalents()
+      .then((rows) => { if (alive) setRemote(rows && rows.length ? rows : null) })
+      .catch(() => {})
+      .finally(() => { if (alive) setLoaded(true) })
+    return () => { alive = false }
+  }, [])
+
+  const pool = remote || TALENTS
+  const usingSample = !remote
+
+  // 풀이 정해지면 랜덤 정렬
+  const shuffled = useMemo(() => shuffle(pool), [pool])
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -44,8 +60,8 @@ export default function App() {
 
   // 기업 인재추천 챗봇에 넘길 공개 인재 요약
   const talentSummaries = useMemo(
-    () => TALENTS.map((t) => ({ name: t.name, field: t.field, skills: t.skills, score: totalScore(t.scores), headline: t.headline, status: t.status })),
-    []
+    () => pool.map((t) => ({ name: t.name, field: t.field, skills: t.skills, score: totalScore(t.scores), headline: t.headline, status: t.status })),
+    [pool]
   )
 
   return (
@@ -291,7 +307,7 @@ function H2({ children }) {
   return <h2 className="sec-h2" style={{ fontSize: 44, fontWeight: 800, letterSpacing: '-0.035em', lineHeight: 1.1 }}>{children}</h2>
 }
 
-function TalentCard({ t }) {
+function TalentCard({ t, onOffer }) {
   const offered = t.status === '채용제의 수신중'
   const total = totalScore(t.scores)
   return (
