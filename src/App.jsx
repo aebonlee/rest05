@@ -110,6 +110,7 @@ export default function App() {
               <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--orange)', letterSpacing: '0.02em' }}>인재풀</span>
             </div>
             <div className="nav-links" style={{ display: 'flex', gap: 34, fontSize: 16, fontWeight: 600, color: 'var(--slate)', whiteSpace: 'nowrap' }}>
+              <NavLink href="#about">About</NavLink>
               <NavLink href="#talents">인재 둘러보기</NavLink>
               <NavLink href="#fields">직무 분야</NavLink>
               <NavLink href="#process">채용 제의 절차</NavLink>
@@ -158,6 +159,48 @@ export default function App() {
                 <div style={{ fontSize: 15, color: 'var(--faint)', marginTop: 6, fontWeight: 500 }}>{s.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ABOUT ── */}
+      <section id="about" style={{ position: 'relative', zIndex: 2, padding: '78px 0 40px' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
+          <div ref={registerTitle} className="reveal" style={{ maxWidth: 720, marginBottom: 44 }}>
+            <Eyebrow>ABOUT</Eyebrow>
+            <H2>지원하지 않아도, 기업이 먼저 찾아옵니다</H2>
+            <p style={{ fontSize: 18, color: 'var(--muted)', marginTop: 16, lineHeight: 1.7 }}>
+              <b style={{ color: 'var(--ink)' }}>드림아이티비즈 인재풀</b>은 취업준비생의 실력을 학력·자격·경력·포트폴리오·역량평가
+              <b style={{ color: 'var(--ink)' }}> 5개 축으로 공정하게 검증</b>해 인증 점수로 보여주는 역(逆)채용 플랫폼입니다.
+              취준생은 한 번 프로필을 등록해두면 기업이 직접 검색해 채용을 제안합니다.
+            </p>
+          </div>
+
+          {/* 2개의 AI 챗봇 사용법 */}
+          <div style={{ background: '#fff', border: '1px solid #EAEDF0', borderRadius: 22, padding: '34px 36px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>AI 챗봇 2종 안내</span>
+            </div>
+            <p style={{ fontSize: 15.5, color: 'var(--muted)', lineHeight: 1.65, marginBottom: 24 }}>
+              화면 <b style={{ color: 'var(--ink)' }}>우측 하단의 💬 버튼</b>을 누르면 챗봇이 열립니다. 패널 <b style={{ color: 'var(--ink)' }}>맨 위 탭</b>에서 두 챗봇을 전환할 수 있어요.
+            </p>
+            <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+              {[
+                { icon: '🧵', tag: '취준생용', title: '취준생 코치', desc: '이력서 첨삭, 자기소개서 코칭, 취업 상담을 도와드립니다. "이력서 한 줄만 고쳐줘"처럼 편하게 물어보세요.' },
+                { icon: '🏢', tag: '기업용', title: '기업 인재추천', desc: '찾는 직무·조건을 설명하면 인재풀에서 가장 적합한 인재를 매칭해 추천합니다. "React 신입 추천해줘"처럼요.' },
+              ].map((c) => (
+                <div key={c.title} style={{ background: '#FBFAF8', border: '1px solid #F0EEEA', borderRadius: 16, padding: '24px 24px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                    <div style={{ width: 46, height: 46, borderRadius: 12, background: '#fff', border: '1px solid #EAEDF0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>{c.icon}</div>
+                    <div>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--orange)', background: 'var(--coral-bg)', padding: '3px 9px', borderRadius: 999 }}>{c.tag}</span>
+                      <div style={{ fontSize: 18, fontWeight: 800, marginTop: 6, letterSpacing: '-0.02em' }}>{c.title}</div>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 14.5, color: 'var(--muted)', lineHeight: 1.6 }}>{c.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
