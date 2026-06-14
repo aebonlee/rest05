@@ -41,8 +41,8 @@ button { font-family: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes spoolBob {
-  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
-  50%      { transform: translateY(-10px) rotate(1.5deg); }
+  0%, 100% { transform: translateY(0) rotate(-0.8deg); }
+  50%      { transform: translateY(-5px) rotate(0.8deg); }
 }
 @keyframes dotPulse {
   0%, 100% { transform: scale(1); }

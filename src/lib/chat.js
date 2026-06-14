@@ -10,13 +10,13 @@ const FUNCTION_NAME = import.meta.env.VITE_CHAT_FUNCTION || 'chat'
  * @param {{role:'user'|'assistant', content:string}[]} messages
  * @returns {Promise<string>} 어시스턴트 답변
  */
-export async function sendChat(messages) {
+export async function sendChat(messages, { mode = 'coach', talents } = {}) {
   if (!supabase) {
     throw new Error('Supabase 환경변수(VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY)가 설정되지 않았습니다.')
   }
 
   const { data, error } = await supabase.functions.invoke(FUNCTION_NAME, {
-    body: { messages },
+    body: { mode, messages, ...(talents ? { talents } : {}) },
   })
 
   if (error) {

@@ -1,16 +1,52 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useThread } from './hooks/useThread'
 import Chatbot from './components/Chatbot'
 import AuthButton from './components/AuthButton'
+import ProfileForm from './components/ProfileForm'
+import OfferModal from './components/OfferModal'
 import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
 const BRAND = '드림아이티비즈'
 
+// 메인 노출은 매 방문마다 랜덤(피셔-예이츠). 인원수가 적을 땐 전체, 많아지면 셔플 효과.
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 export default function App() {
   const { wrapRef, svgRef, pathRef, dotRef, spoolRef, registerTitle } = useThread()
   const [filter, setFilter] = useState('전체')
+  const [query, setQuery] = useState('')
+  const [minScore, setMinScore] = useState(0)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [offerTarget, setOfferTarget] = useState(null)
 
-  const visible = filter === '전체' ? TALENTS : TALENTS.filter((t) => t.field === filter)
+  // 마운트 시 한 번 랜덤 정렬
+  const shuffled = useMemo(() => shuffle(TALENTS), [])
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return shuffled.filter((t) => {
+      if (filter !== '전체' && t.field !== filter) return false
+      if (totalScore(t.scores) < minScore) return false
+      if (q) {
+        const hay = `${t.name} ${t.field} ${t.headline} ${t.blurb} ${t.skills.join(' ')}`.toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    })
+  }, [shuffled, filter, query, minScore])
+
+  // 기업 인재추천 챗봇에 넘길 공개 인재 요약
+  const talentSummaries = useMemo(
+    () => TALENTS.map((t) => ({ name: t.name, field: t.field, skills: t.skills, score: totalScore(t.scores), headline: t.headline, status: t.status })),
+    []
+  )
 
   return (
     <div ref={wrapRef} style={{ background: 'var(--cream)', position: 'relative', overflowX: 'hidden' }}>
@@ -64,6 +100,9 @@ export default function App() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button onClick={() => setProfileOpen(true)} style={ctaPill('#E8623D')} onMouseEnter={hoverBg('#0F2540')} onMouseLeave={hoverBg('#E8623D')}>
+              인재 등록
+            </button>
             <AuthButton />
           </div>
         </nav>
@@ -92,7 +131,7 @@ export default function App() {
           </p>
           <div style={{ display: 'flex', gap: 14, marginTop: 44, flexWrap: 'wrap', animation: 'floatUp .7s ease .2s both' }}>
             <a href="#talents" style={ctaPill('#E8623D', 17)} onMouseEnter={hoverY} onMouseLeave={hoverYReset}>인재 둘러보기 <span>→</span></a>
-            <a href="#process" style={{ ...ctaPillGhost, fontSize: 17 }} onMouseEnter={hoverBg('#F6F7F9', true)} onMouseLeave={hoverBg('#fff', true)}>취업준비생이에요</a>
+            <button onClick={() => setProfileOpen(true)} style={{ ...ctaPillGhost, fontSize: 17, cursor: 'pointer', fontFamily: 'inherit' }} onMouseEnter={hoverBg('#F6F7F9')} onMouseLeave={hoverBg('#fff')}>취업준비생이에요 · 인재 등록</button>
           </div>
         </div>
         <div style={{ position: 'relative', zIndex: 3, borderTop: '1px solid var(--line)', background: 'rgba(255,255,255,0.6)' }}>
@@ -115,33 +154,46 @@ export default function App() {
               <Eyebrow>VERIFIED TALENT POOL</Eyebrow>
               <H2>드림아이티비즈 인증 인재</H2>
               <p style={{ fontSize: 16, color: 'var(--muted)', marginTop: 14, maxWidth: 560, lineHeight: 1.6 }}>
-                학력·자격·경력·포트폴리오·역량평가 <b style={{ color: 'var(--ink)' }}>5개 축을 검증</b>해 인증 점수로 환산합니다. 점수로 증명된 인재만 노출됩니다.
+                학력·자격·경력·포트폴리오·역량평가 <b style={{ color: 'var(--ink)' }}>5개 축을 검증</b>해 인증 점수로 환산합니다. 기업은 검색·필터로 원하는 인재를 빠르게 찾고 바로 채용 제의할 수 있습니다.
               </p>
             </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {FILTERS.map((f) => {
-                const active = filter === f
-                return (
-                  <button
-                    key={f}
-                    onClick={() => setFilter(f)}
-                    style={{
-                      cursor: 'pointer', fontSize: 15, fontWeight: 700, padding: '10px 18px', borderRadius: 999,
-                      border: `1px solid ${active ? '#0F2540' : '#DCE1E6'}`, background: active ? '#0F2540' : '#fff',
-                      color: active ? '#fff' : '#5C6B7A', transition: 'all .15s',
-                    }}
-                  >
-                    {f}
-                  </button>
-                )
-              })}
+          </div>
+
+          {/* 기업용 검색/필터 바 */}
+          <div style={{ background: '#fff', border: '1px solid #EAEDF0', borderRadius: 16, padding: '16px 18px', marginBottom: 28, display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input
+              value={query} onChange={(e) => setQuery(e.target.value)}
+              placeholder="🔍 직무·기술·키워드로 인재 검색 (예: React, 데이터)"
+              style={{ flex: '1 1 280px', minWidth: 220, border: '1px solid #DCE1E6', borderRadius: 10, padding: '11px 14px', fontSize: 15, outline: 'none', fontFamily: 'inherit' }}
+            />
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 600, color: '#5C6B7A' }}>
+              최소 점수 <b style={{ color: '#E8623D' }}>{minScore}</b>
+              <input type="range" min="0" max="100" step="5" value={minScore} onChange={(e) => setMinScore(Number(e.target.value))} style={{ accentColor: '#E8623D' }} />
+            </label>
+          </div>
+
+          {/* 직무 필터 칩 */}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 28 }}>
+            {FILTERS.map((f) => {
+              const active = filter === f
+              return (
+                <button key={f} onClick={() => setFilter(f)}
+                  style={{ cursor: 'pointer', fontSize: 14.5, fontWeight: 700, padding: '9px 16px', borderRadius: 999, border: `1px solid ${active ? '#0F2540' : '#DCE1E6'}`, background: active ? '#0F2540' : '#fff', color: active ? '#fff' : '#5C6B7A', transition: 'all .15s', fontFamily: 'inherit' }}>
+                  {f}
+                </button>
+              )
+            })}
+          </div>
+
+          {visible.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#8A96A3', fontSize: 16 }}>조건에 맞는 인재가 없습니다. 검색어나 필터를 조정해 보세요.</div>
+          ) : (
+            <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18 }}>
+              {visible.map((t, i) => (
+                <TalentCard key={i} t={t} onOffer={() => setOfferTarget(t)} />
+              ))}
             </div>
-          </div>
-          <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18 }}>
-            {visible.map((t, i) => (
-              <TalentCard key={i} t={t} />
-            ))}
-          </div>
+          )}
         </div>
       </section>
 
@@ -210,8 +262,12 @@ export default function App() {
         </div>
       </footer>
 
-      {/* ── 취업 코칭 챗봇 ── */}
-      <Chatbot />
+      {/* ── 챗봇(취준생 코치 + 기업 인재추천) ── */}
+      <Chatbot talents={talentSummaries} />
+
+      {/* ── 모달 ── */}
+      <ProfileForm open={profileOpen} onClose={() => setProfileOpen(false)} />
+      <OfferModal talent={offerTarget} onClose={() => setOfferTarget(null)} />
     </div>
   )
 }
@@ -277,9 +333,20 @@ function TalentCard({ t }) {
           <span key={s} style={{ fontSize: 13, fontWeight: 600, color: '#5C6B7A', background: '#F2F4F6', padding: '5px 12px', borderRadius: 8 }}>{s}</span>
         ))}
       </div>
+
+      {/* 링크 + 채용 제의 */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 14 }}>
+          {t.website && <a href={t.website} target="_blank" rel="noreferrer" style={linkStyle}>🔗 자기소개 웹</a>}
+          {t.portfolio && <a href={t.portfolio} target="_blank" rel="noreferrer" style={linkStyle}>📁 포트폴리오</a>}
+        </div>
+        <button onClick={onOffer} style={{ cursor: 'pointer', fontSize: 14, fontWeight: 700, padding: '9px 18px', borderRadius: 999, border: 'none', background: '#E8623D', color: '#fff', fontFamily: 'inherit' }}>채용 제의 →</button>
+      </div>
     </div>
   )
 }
+
+const linkStyle = { fontSize: 13.5, fontWeight: 700, color: '#0F2540', textDecoration: 'none', borderBottom: '1.5px solid #FDEBE4' }
 
 function ScoreBadge({ total }) {
   return (
@@ -308,6 +375,7 @@ function ctaPill(bg, fontSize = 15) {
     display: 'inline-flex', alignItems: 'center', gap: 9, background: bg, color: '#fff',
     fontSize, fontWeight: 700, padding: fontSize >= 17 ? '16px 32px' : '11px 22px',
     borderRadius: 999, textDecoration: 'none', transition: 'transform .15s, background .15s', whiteSpace: 'nowrap',
+    border: 'none', cursor: 'pointer', fontFamily: 'inherit',
   }
 }
 const ctaPillGhost = {

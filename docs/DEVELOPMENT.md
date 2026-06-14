@@ -41,7 +41,21 @@ npm run dev
 > **OpenAI 키는 .env에 넣지 않는다.** 프런트엔드 빌드에 노출되기 때문.
 > 키는 Supabase Edge Function 시크릿으로만 등록한다(아래).
 
-## 챗봇 백엔드 (Supabase Edge Function)
+## 핵심 기능 요약
+- **인재 쇼케이스(역채용)**: 메인에서 인증 인재 카드 랜덤 노출, 기업용 검색(키워드)·최소점수·직무 필터
+- **AI 챗봇 2종**(Edge Function `chat`, mode로 분기)
+  - 취준생 코치(`coach`): 취업상담·이력서·자소서
+  - 기업 인재추천(`recruit`): 직무 파악 + 인재풀에서 매칭 추천
+- **객관 평가 점수**: 학력·자격·경력·포트폴리오·역량평가 5축. 직무별 점검항목+동일 배점(`src/data/assessment.js`)
+- **AI 역량평가**(`questions`/`grade` mode): 직무별 다양한 질문 생성 → 공정 채점 → 역량평가 축 점수
+- **인재 등록 폼**: 로그인 후 프로필+증빙서류 업로드(Storage)+점검항목+AI평가. `verified=false`로 제출→검토 후 확정
+- **채용 제의**: 기업이 카드에서 바로 제의(`rest05_offers`)
+- **쉬었음 청년** 재취업 지원 대상 플래그
+
+## 챗봇/평가 백엔드 (Supabase Edge Function)
+`supabase/functions/chat/index.ts` 한 함수가 `mode`로 분기:
+`coach`(기본 코칭) · `recruit`(기업 인재추천) · `questions`(평가문항 생성) · `grade`(공정 채점).
+
 
 ### 1) OpenAI 키 등록 (서버 시크릿)
 - **대시보드:** Supabase → 프로젝트 → Edge Functions → Secrets → Add new secret

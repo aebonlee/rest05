@@ -15,8 +15,21 @@ create table if not exists public.rest05_profiles (
   blurb       text,                       -- 상세 소개
   skills      text[] default '{}',        -- 기술 스택 태그
   status      text   default '구직중',     -- 구직중 / 채용제의 수신중 / 비공개
-  is_public   boolean default false,      -- 인재풀 공개 여부
+  is_public   boolean default false,      -- 인재풀 공개 여부(인증 완료 후 본인이 on)
   provider    text,                       -- google / kakao
+  phone       text,                       -- 연락처(비공개)
+  -- 실력 증빙 자료(취준생이 제출 → 드림아이티비즈가 검토해 점수 부여)
+  edu_text       text,                    -- 학력
+  cert_text      text,                    -- 자격/수료
+  career_text    text,                    -- 경력/프로젝트
+  website_url    text,                    -- 개인 자기소개 웹/홈페이지
+  portfolio_url  text,                    -- 포트폴리오 링크(GitHub/노션 등)
+  documents      text[] default '{}',     -- 증빙서류 Storage 경로(학위/자격/경력 등)
+  checklist      text[] default '{}',     -- 충족한 직무 점검항목(자가 점검)
+  ai_score       int,                     -- AI 역량평가 점수(0~100)
+  ai_feedback    text,                    -- AI 역량평가 피드백
+  is_neet        boolean default false,   -- 쉬었음 청년(재취업 지원 대상)
+  review_status  text default '검토대기',  -- 검토대기 / 인증완료 / 보류
   -- 실력 증빙 · 5개 축 검증 점수(0~100). 드림아이티비즈 인증 평가로 부여
   score_education  int default 0,          -- 학력
   score_cert       int default 0,          -- 자격
@@ -101,3 +114,29 @@ drop trigger if exists rest05_on_auth_user_created on auth.users;
 create trigger rest05_on_auth_user_created
   after insert on auth.users
   for each row execute function public.rest05_handle_new_user();
+
+-- ─────────────────────────────────────────────────────────────
+-- Storage: 증빙서류 버킷 (rest05-docs, 비공개)
+-- 경로 규칙: <user_id>/<파일명>  → 본인만 업로드/열람
+-- ─────────────────────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('rest05-docs', 'rest05-docs', false)
+on conflict (id) do nothing;
+
+drop policy if exists rest05_docs_insert_own on storage.objects;
+create policy rest05_docs_insert_own on storage.objects
+  for insert with check (
+    bucket_id = 'rest05-docs' and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists rest05_docs_select_own on storage.objects;
+create policy rest05_docs_select_own on storage.objects
+  for select using (
+    bucket_id = 'rest05-docs' and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists rest05_docs_delete_own on storage.objects;
+create policy rest05_docs_delete_own on storage.objects
+  for delete using (
+    bucket_id = 'rest05-docs' and (storage.foldername(name))[1] = auth.uid()::text
+  );

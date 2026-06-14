@@ -77,7 +77,9 @@ export function useThread() {
       let start = [W * 0.74, 300]
       if (spoolRef.current) {
         const sr = spoolRef.current.getBoundingClientRect()
-        start = [sr.left - wr.left + sr.width * 0.5, sr.bottom - wr.top - 14]
+        // 실선을 실타래 '안쪽'에서 시작 → 실타래(상위 z-index)가 시작점 이음새를 덮어
+        // 둘이 한 덩어리처럼 연결돼 보인다(떨어져 보이지 않도록).
+        start = [sr.left - wr.left + sr.width * 0.5, sr.top - wr.top + sr.height * 0.62]
       }
 
       const pts = [start]

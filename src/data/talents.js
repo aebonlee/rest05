@@ -1,7 +1,11 @@
 // 인재(취업준비생) 쇼케이스 데이터.
 // 추후 Supabase 테이블(rest05_profiles)에서 불러오도록 교체 가능.
 
-export const FILTERS = ['전체', '프론트엔드', '백엔드', 'AI·데이터', '기획·PM', '디자인']
+// IT 도메인 한정 + 개발 외 폭넓은 IT 직무까지 포괄
+export const FILTERS = [
+  '전체', '프론트엔드', '백엔드', 'AI·데이터', 'DevOps·클라우드',
+  'QA·테스트', '보안', '기획·PM', '디자인', 'IT마케팅·세일즈', '기술지원·CS',
+]
 
 // 드림아이티비즈 인재 인증 평가 5개 축 (실력 증빙)
 export const DIMENSIONS = [
@@ -27,6 +31,7 @@ export const TALENTS = [
     blurb: '디자인 시스템 구축과 접근성에 강점. 실서비스 3종 런칭 경험.',
     skills: ['React', 'TypeScript', 'Vite', '디자인시스템'],
     scores: { education: 88, cert: 82, career: 90, portfolio: 96, assessment: 92 },
+    website: 'https://example.com', portfolio: 'https://github.com',
   },
   {
     field: 'AI·데이터',
@@ -36,6 +41,7 @@ export const TALENTS = [
     blurb: 'LLM 파인튜닝과 대시보드 설계. 캐글 상위 5% 입상.',
     skills: ['Python', 'PyTorch', 'SQL', 'LLM'],
     scores: { education: 94, cert: 90, career: 84, portfolio: 92, assessment: 95 },
+    portfolio: 'https://github.com',
   },
   {
     field: '백엔드',
@@ -75,13 +81,18 @@ export const TALENTS = [
   },
 ]
 
+// IT 도메인 한정, 개발 외 폭넓은 직무까지 포괄
 export const FIELDS = [
-  { icon: 'F', name: '프론트엔드', desc: '사용자가 만나는 화면을 설계하고 구현하는 인재들이 모여 있습니다.' },
-  { icon: 'B', name: '백엔드', desc: '서비스의 안정성과 확장성을 책임지는 서버·인프라 인재들입니다.' },
-  { icon: 'A', name: 'AI·데이터', desc: '데이터와 모델로 가치를 만드는 분석가·ML 엔지니어들입니다.' },
-  { icon: 'P', name: '기획·PM', desc: '문제를 정의하고 제품의 방향을 잡는 기획·프로덕트 인재들입니다.' },
-  { icon: 'D', name: '디자인', desc: '브랜드와 경험을 디자인하는 프로덕트·UX 디자이너들입니다.' },
-  { icon: 'O', name: 'DevOps·기타', desc: '배포·운영 자동화 등 제품을 든든히 받치는 다양한 인재들입니다.' },
+  { icon: 'F', name: '프론트엔드', desc: '사용자가 만나는 화면을 설계하고 구현하는 인재.' },
+  { icon: 'B', name: '백엔드', desc: '서비스의 안정성과 확장성을 책임지는 서버 인재.' },
+  { icon: 'A', name: 'AI·데이터', desc: '데이터와 모델로 가치를 만드는 분석가·ML 인재.' },
+  { icon: 'O', name: 'DevOps·클라우드', desc: '배포·운영 자동화와 클라우드 인프라 인재.' },
+  { icon: 'Q', name: 'QA·테스트', desc: '품질을 설계하고 검증하는 테스트 전문 인재.' },
+  { icon: 'S', name: '보안', desc: '시스템과 데이터를 지키는 정보보안 인재.' },
+  { icon: 'P', name: '기획·PM', desc: '문제를 정의하고 제품 방향을 잡는 기획 인재.' },
+  { icon: 'D', name: '디자인', desc: '브랜드와 경험을 디자인하는 UX/UI 인재.' },
+  { icon: 'M', name: 'IT마케팅·세일즈', desc: '데이터 기반 그로스·테크 세일즈 인재.' },
+  { icon: 'C', name: '기술지원·CS', desc: '고객과 제품을 잇는 기술지원·CS 인재.' },
 ]
 
 // 기업이 인재를 만나는 절차 (역채용 흐름)
@@ -93,8 +104,8 @@ export const STEPS = [
 ]
 
 export const STATS = [
-  { num: '120+', label: '등록된 인재' },
-  { num: '6개', label: '직무 분야' },
-  { num: '85%', label: '수료생 취업률' },
-  { num: '40+', label: '협력 기업' },
+  { num: '29명', label: '1기 등록 인재' },
+  { num: '10개', label: 'IT 직무 분야' },
+  { num: '5축', label: '인증 평가 기준' },
+  { num: 'AI', label: '역량평가 · 코칭' },
 ]
