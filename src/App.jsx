@@ -5,7 +5,7 @@ import AuthButton from './components/AuthButton'
 import ProfileForm from './components/ProfileForm'
 import OfferModal from './components/OfferModal'
 import MyPage from './components/MyPage'
-import { SpoolSVG, BrandPalette } from './components/BrandPalette'
+import { SpoolSVG, SpoolRow, BrandPalette } from './components/BrandPalette'
 import { fetchPublicTalents } from './lib/talentsRepo'
 import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
@@ -132,13 +132,14 @@ export default function App() {
       {/* ── HERO ── */}
       <section style={{ position: 'relative', zIndex: 2, color: 'var(--navy)', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -240, right: -180, width: 680, height: 680, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,98,61,0.12), transparent 64%)', zIndex: 0 }} />
-        <img
+        <div
           ref={spoolRef}
-          src="/assets/spool.png"
-          alt="실타래"
           className="hero-spool"
-          style={{ position: 'absolute', right: '9%', top: 96, width: 230, height: 'auto', zIndex: 2, animation: 'spoolBob 6s ease-in-out infinite', filter: 'drop-shadow(0 26px 44px rgba(15,37,64,0.20))' }}
-        />
+          aria-hidden="true"
+          style={{ position: 'absolute', right: '9%', top: 96, zIndex: 2, animation: 'spoolBob 6s ease-in-out infinite', filter: 'drop-shadow(0 26px 44px rgba(15,37,64,0.18))' }}
+        >
+          <SpoolSVG size={240} id="hero-spool" />
+        </div>
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '96px 40px 96px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--coral-bg)', border: '1px solid var(--coral-border)', padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 700, color: 'var(--coral-text)', marginBottom: 30, animation: 'floatUp .6s ease both' }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--orange)' }} />
@@ -207,19 +208,19 @@ export default function App() {
             </div>
           </div>
 
-          {/* 브랜드: 실타래 + 컬러 팔레트 */}
-          <div style={{ marginTop: 18, background: '#fff', border: '1px solid #EAEDF0', borderRadius: 22, padding: '34px 36px', display: 'flex', gap: 32, alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-              <SpoolSVG size={150} />
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--muted)' }}>실타래 — 연결의 상징</div>
-            </div>
-            <div style={{ flex: 1, minWidth: 280 }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND COLORS</span>
-              <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 18px' }}>
-                실 한 가닥이 사람과 기업을 잇는다는 의미를 담은 실타래가 시그니처입니다. 아래 5색이 브랜드 컬러 팔레트입니다.
-              </p>
-              <BrandPalette />
-            </div>
+          {/* 브랜드: 실타래 색상 변형 + 컬러 팔레트 */}
+          <div style={{ marginTop: 18, background: '#fff', border: '1px solid #EAEDF0', borderRadius: 22, padding: '34px 36px' }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND · 실타래</span>
+            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 22px' }}>
+              실 한 가닥이 사람과 기업을 잇는다는 의미의 실타래가 시그니처입니다. (코드로 직접 그린 SVG — 색상 변형 자유)
+            </p>
+            <SpoolRow size={104} />
+            <div style={{ height: 1, background: 'var(--line)', margin: '28px 0' }} />
+            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND COLORS</span>
+            <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 18px' }}>
+              메인·보조(상태)·배경으로 구성된 확장 컬러 팔레트입니다.
+            </p>
+            <BrandPalette />
           </div>
         </div>
       </section>
