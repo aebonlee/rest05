@@ -17,6 +17,7 @@ const MODES = {
 
 export default function Chatbot({ talents = [] }) {
   const [open, setOpen] = useState(false)
+  const [hint, setHint] = useState(true)
   const [mode, setMode] = useState('coach')
   const [chats, setChats] = useState({ coach: [], recruit: [] })
   const [input, setInput] = useState('')
@@ -52,7 +53,17 @@ export default function Chatbot({ talents = [] }) {
 
   return (
     <>
-      <button onClick={() => setOpen((o) => !o)} aria-label="챗봇 열기"
+      {/* 2종 안내 풍선도움말 */}
+      {!open && hint && (
+        <div style={{ position: 'fixed', right: 26, bottom: 100, zIndex: 100, width: 244, background: '#0F2540', color: '#fff', borderRadius: 16, padding: '14px 16px', boxShadow: '0 14px 34px rgba(15,37,64,0.32)', animation: 'chatPop .3s ease both' }}>
+          <button onClick={() => setHint(false)} aria-label="닫기" style={{ position: 'absolute', top: 8, right: 10, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: 13 }}>✕</button>
+          <div style={{ fontSize: 13.5, fontWeight: 800, marginBottom: 6 }}>AI 챗봇이 2개예요!</div>
+          <div style={{ fontSize: 12.5, lineHeight: 1.55, color: 'rgba(255,255,255,0.82)' }}>🧵 취준생 코치 · 🏢 기업 인재추천<br />아래 버튼을 눌러 탭에서 전환하세요.</div>
+          <div style={{ position: 'absolute', right: 24, bottom: -7, width: 14, height: 14, background: '#0F2540', transform: 'rotate(45deg)' }} />
+        </div>
+      )}
+
+      <button onClick={() => { setOpen((o) => !o); setHint(false) }} aria-label="챗봇 열기"
         style={{ position: 'fixed', right: 26, bottom: 26, zIndex: 100, width: 64, height: 64, borderRadius: '50%', border: 'none', cursor: 'pointer', background: open ? '#0F2540' : '#E8623D', color: '#fff', fontSize: 26, boxShadow: '0 14px 34px rgba(232,98,61,0.42)', transition: 'transform .15s, background .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-3px)')} onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}>
         {open ? '✕' : '💬'}

@@ -73,6 +73,7 @@ button { font-family: inherit; }
 /* 반응형 */
 @media (max-width: 900px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+  .grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
   .hero-spool { display: none !important; }
   .hero-h1 { font-size: 44px !important; }
   .sec-h2 { font-size: 32px !important; }

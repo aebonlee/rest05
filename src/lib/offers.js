@@ -15,3 +15,15 @@ export async function sendOffer({ talentId, company, contact, message }) {
   if (error) throw new Error(error.message)
   return true
 }
+
+/** 내가 받은 채용 제의 목록 (RLS: 본인 talent_id만 조회 가능) */
+export async function fetchMyOffers(userId) {
+  if (!supabase || !userId) return []
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('id,company,contact,message,created_at')
+    .eq('talent_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) { console.warn('[rest05] 제의 조회 실패:', error.message); return [] }
+  return data || []
+}

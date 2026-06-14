@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { isSupabaseReady } from '../lib/supabase'
 import { getUser, onAuthChange, signOut, signInWithGoogle, signInWithKakao } from '../lib/auth'
 
-export default function AuthButton() {
+export default function AuthButton({ onMyPage }) {
   const [user, setUser] = useState(null)
   const [modal, setModal] = useState(false)
   const [menu, setMenu] = useState(false)
@@ -28,6 +28,7 @@ export default function AuthButton() {
         {menu && (
           <div style={menuBox} onMouseLeave={() => setMenu(false)}>
             <div style={{ fontSize: 12, color: '#8A96A3', padding: '4px 12px 8px' }}>{user.email}</div>
+            {onMyPage && <button style={menuItem} onClick={() => { setMenu(false); onMyPage() }}>마이페이지</button>}
             <button style={menuItem} onClick={async () => { await signOut(); setMenu(false) }}>로그아웃</button>
           </div>
         )}

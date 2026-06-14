@@ -4,6 +4,8 @@ import Chatbot from './components/Chatbot'
 import AuthButton from './components/AuthButton'
 import ProfileForm from './components/ProfileForm'
 import OfferModal from './components/OfferModal'
+import MyPage from './components/MyPage'
+import { SpoolSVG, BrandPalette } from './components/BrandPalette'
 import { fetchPublicTalents } from './lib/talentsRepo'
 import { FILTERS, TALENTS, FIELDS, STEPS, STATS, DIMENSIONS, totalScore } from './data/talents'
 
@@ -26,6 +28,8 @@ export default function App() {
   const [minScore, setMinScore] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
   const [offerTarget, setOfferTarget] = useState(null)
+  const [view, setView] = useState('home') // 'home' | 'me'
+  const [meVersion, setMeVersion] = useState(0) // 마이페이지 새로고침 트리거
   const [remote, setRemote] = useState(null) // rest05_profiles 로드 결과
   const [loaded, setLoaded] = useState(false)
 
@@ -120,7 +124,7 @@ export default function App() {
             <button onClick={() => setProfileOpen(true)} style={ctaPill('#E8623D')} onMouseEnter={hoverBg('#0F2540')} onMouseLeave={hoverBg('#E8623D')}>
               인재 등록
             </button>
-            <AuthButton />
+            <AuthButton onMyPage={() => setView('me')} />
           </div>
         </nav>
       </header>
@@ -200,6 +204,21 @@ export default function App() {
                   <p style={{ fontSize: 14.5, color: 'var(--muted)', lineHeight: 1.6 }}>{c.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* 브랜드: 실타래 + 컬러 팔레트 */}
+          <div style={{ marginTop: 18, background: '#fff', border: '1px solid #EAEDF0', borderRadius: 22, padding: '34px 36px', display: 'flex', gap: 32, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+              <SpoolSVG size={150} />
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--muted)' }}>실타래 — 연결의 상징</div>
+            </div>
+            <div style={{ flex: 1, minWidth: 280 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--orange)' }}>BRAND COLORS</span>
+              <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.6, margin: '6px 0 18px' }}>
+                실 한 가닥이 사람과 기업을 잇는다는 의미를 담은 실타래가 시그니처입니다. 아래 5색이 브랜드 컬러 팔레트입니다.
+              </p>
+              <BrandPalette />
             </div>
           </div>
         </div>
@@ -324,8 +343,13 @@ export default function App() {
       {/* ── 챗봇(취준생 코치 + 기업 인재추천) ── */}
       <Chatbot talents={talentSummaries} />
 
+      {/* ── 마이페이지 (로그인 사용자 개인 페이지) ── */}
+      {view === 'me' && (
+        <MyPage version={meVersion} onBack={() => setView('home')} onEdit={() => setProfileOpen(true)} />
+      )}
+
       {/* ── 모달 ── */}
-      <ProfileForm open={profileOpen} onClose={() => setProfileOpen(false)} />
+      <ProfileForm open={profileOpen} onClose={() => { setProfileOpen(false); setMeVersion((v) => v + 1) }} />
       <OfferModal talent={offerTarget} onClose={() => setOfferTarget(null)} />
     </div>
   )
