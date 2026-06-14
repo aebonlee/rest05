@@ -138,7 +138,7 @@ export default function App() {
           aria-hidden="true"
           style={{ position: 'absolute', right: '9%', top: 96, zIndex: 2, animation: 'spoolBob 6s ease-in-out infinite', filter: 'drop-shadow(0 26px 44px rgba(15,37,64,0.18))' }}
         >
-          <SpoolSVG size={240} id="hero-spool" />
+          <SpoolSVG size={240} from="#3E5C82" to="#0F2540" id="hero-spool" />
         </div>
         <div style={{ position: 'relative', zIndex: 3, maxWidth: 1280, margin: '0 auto', padding: '96px 40px 96px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--coral-bg)', border: '1px solid var(--coral-border)', padding: '8px 16px', borderRadius: 999, fontSize: 14, fontWeight: 700, color: 'var(--coral-text)', marginBottom: 30, animation: 'floatUp .6s ease both' }}>
