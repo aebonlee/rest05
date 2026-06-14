@@ -1,0 +1,21 @@
+{
+  "name": "rest05",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "드림아이티비즈 인재 쇼케이스 플랫폼 + 취업/이력서/자소서 코칭 챗봇",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
+  }
+}
